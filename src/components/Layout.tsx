@@ -6,10 +6,9 @@ import { useState } from 'react';
 
 interface LayoutProps {
   user: User;
-  onLogout: () => void;
 }
 
-export default function Layout({ user, onLogout }: LayoutProps) {
+export default function Layout({ user }: LayoutProps) {
   const [collapsed, setCollapsed] = useState(false);
 
   return (
@@ -18,10 +17,9 @@ export default function Layout({ user, onLogout }: LayoutProps) {
         user={user}
         collapsed={collapsed}
         onToggle={() => setCollapsed(!collapsed)}
-        onLogout={onLogout}
       />
       <div className={`transition-all duration-300 ${collapsed ? 'ml-16' : 'ml-64'}`}>
-        <Header user={user} onMenuToggle={() => setCollapsed(!collapsed)} />
+        <Header user={user} />
         <main className="p-6">
           <Outlet />
         </main>

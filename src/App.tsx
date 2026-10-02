@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { User, getCurrentUser, isAuthenticated, initializeUsers } from './lib/auth';
+import { User, getCurrentUser } from './lib/auth';
 import { initializeSampleData } from './lib/store';
 import Layout from './components/Layout';
-import LoginPage from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Projects from './pages/Projects';
 import Calls from './pages/Calls';
@@ -22,27 +21,14 @@ export default function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Initialize app data
-    initializeUsers();
-    
-    // Check existing auth
+    // Get default user (no auth required)
     const currentUser = getCurrentUser();
-    if (currentUser) {
-      setUser(currentUser);
-      initializeSampleData(currentUser.id);
-    }
+    setUser(currentUser);
+    initializeSampleData(currentUser.id);
     setLoading(false);
   }, []);
 
-  const handleLogin = (loggedUser: User) => {
-    setUser(loggedUser);
-    initializeSampleData(loggedUser.id);
-  };
 
-  const handleLogout = () => {
-    setUser(null);
-    localStorage.removeItem('eu_grant_auth');
-  };
 
   if (loading) {
     return (
@@ -57,34 +43,28 @@ export default function App() {
     );
   }
 
+  if (!user) {
+    return null;
+  }
+
   return (
     <BrowserRouter>
       <Routes>
-        <Route
-          path="/login"
-          element={user ? <Navigate to="/dashboard" replace /> : <LoginPage onLogin={handleLogin} />}
-        />
-        {user ? (
-          <>
-            <Route element={<Layout user={user} onLogout={handleLogout} />}>
-              <Route path="/dashboard" element={<Dashboard user={user} />} />
-              <Route path="/projects" element={<Projects />} />
-              <Route path="/calls" element={<Calls />} />
-              <Route path="/consortium" element={<Consortium />} />
-              <Route path="/part-a" element={<PartA />} />
-              <Route path="/part-b" element={<PartB />} />
-              <Route path="/budget" element={<Budget />} />
-              <Route path="/work-packages" element={<WorkPackages />} />
-              <Route path="/annexes" element={<Annexes />} />
-              <Route path="/compliance" element={<Compliance />} />
-              <Route path="/submission" element={<Submission />} />
-              <Route path="/settings" element={<Settings />} />
-            </Route>
-            <Route path="*" element={<Navigate to="/dashboard" replace />} />
-          </>
-        ) : (
-          <Route path="*" element={<Navigate to="/login" replace />} />
-        )}
+        <Route element={<Layout user={user} />}>
+          <Route path="/dashboard" element={<Dashboard user={user} />} />
+          <Route path="/projects" element={<Projects />} />
+          <Route path="/calls" element={<Calls />} />
+          <Route path="/consortium" element={<Consortium />} />
+          <Route path="/part-a" element={<PartA />} />
+          <Route path="/part-b" element={<PartB />} />
+          <Route path="/budget" element={<Budget />} />
+          <Route path="/work-packages" element={<WorkPackages />} />
+          <Route path="/annexes" element={<Annexes />} />
+          <Route path="/compliance" element={<Compliance />} />
+          <Route path="/submission" element={<Submission />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
