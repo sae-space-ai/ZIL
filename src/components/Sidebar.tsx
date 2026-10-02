@@ -14,8 +14,8 @@ import {
   Settings,
   ChevronLeft,
   ChevronRight,
-  LogOut,
   GraduationCap,
+  Home,
 } from 'lucide-react';
 import { User } from '../lib/auth';
 
@@ -23,7 +23,6 @@ interface SidebarProps {
   user: User;
   collapsed: boolean;
   onToggle: () => void;
-  onLogout: () => void;
 }
 
 const navItems = [
@@ -41,7 +40,7 @@ const navItems = [
   { path: '/settings', label: 'Settings', icon: Settings },
 ];
 
-export default function Sidebar({ user, collapsed, onToggle, onLogout }: SidebarProps) {
+export default function Sidebar({ user, collapsed, onToggle }: SidebarProps) {
   const location = useLocation();
 
   return (
@@ -106,14 +105,14 @@ export default function Sidebar({ user, collapsed, onToggle, onLogout }: Sidebar
             </div>
           </div>
         )}
-        <button
-          onClick={onLogout}
-          className="flex items-center gap-3 px-3 py-2 w-full rounded-lg text-slate-400 hover:bg-red-900/30 hover:text-red-300 transition-all"
-          title={collapsed ? 'Logout' : undefined}
+        <NavLink
+          to="/dashboard"
+          className="flex items-center gap-3 px-3 py-2 w-full rounded-lg text-slate-400 hover:bg-sidebar-hover hover:text-white transition-all"
+          title={collapsed ? 'Home' : undefined}
         >
-          <LogOut size={18} />
-          {!collapsed && <span className="text-sm">Sign Out</span>}
-        </button>
+          <Home size={18} />
+          {!collapsed && <span className="text-sm">Home</span>}
+        </NavLink>
       </div>
 
       {/* Collapse toggle */}
